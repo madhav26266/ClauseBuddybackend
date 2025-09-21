@@ -4,7 +4,7 @@ PyPDF2==3.0.1
 python-multipart==0.0.9
 google-generativeai==0.8.3
 transformers==4.36.2
-torch==2.3.1          # safer stable release, avoids 2.8.0 issues
+torch==2.8.0
 faiss-cpu==1.9.0.post1
-numpy==1.26.4         # works with torch + faiss
+numpy==2.1.3
 python-dotenv==1.0.1
