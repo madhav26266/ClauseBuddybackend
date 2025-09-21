@@ -1,14 +1,18 @@
 import os
-from google.genai import Client, types
+from google import genai
+from google.genai.types import GenerateContentConfig
 
 def query_gemini(prompt: str, model_name: str = "gemini-1.5-flash", max_tokens: int = 300):
     try:
-        client = Client(api_key=os.getenv("GOOGLE_API_KEY"))
+        # Initialize Gemini client
+        client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
-        generation_config = types.GenerateContentConfig(
+        # Configure generation
+        generation_config = GenerateContentConfig(
             max_output_tokens=max_tokens
         )
 
+        # Generate response
         response = client.models.generate_content(
             model=model_name,
             contents=prompt,
