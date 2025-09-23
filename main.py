@@ -14,6 +14,7 @@ from transformers import AutoTokenizer, AutoModel
 from gemini_client import query_gemini
 from dotenv import load_dotenv
 load_dotenv()
+import requests
 
 
 
@@ -69,13 +70,14 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(MODEL_NAME)
 print("✅ InLegalBERT model loaded successfully!")
 
-def get_embedding(text: str) -> np.ndarray:
-    """Convert text to embedding using InLegalBERT"""
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
-    with torch.no_grad():
-        outputs = model(**inputs)
-        embeddings = outputs.last_hidden_state.mean(dim=1)  # (1, hidden_size)
-    return embeddings.numpy().astype("float32")  # FAISS requires float32
+
+
+def get_embedding_via_api(text: str) -> np.ndarray:
+    API_URL = "https://api-inference.huggingface.co/models/law-ai/InLegalBERT"
+    headers = {"Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"}
+    
+    response = requests.post(API_URL, headers=headers, json={"inputs": text})
+    return np.array(response.json()).astype("float32")
 
 # --------------------------
 # FAISS setup
@@ -257,6 +259,7 @@ if __name__ == "__main__":
     print("🚀 Starting microservice...")
     print(f"✅ Service will bind to port {port}. Hit GET / to confirm deployment.")
     uvicorn.run(app, host="0.0.0.0", port=port)
+
 
 
 
