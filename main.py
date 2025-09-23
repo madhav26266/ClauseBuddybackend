@@ -62,7 +62,7 @@ app.add_middleware(
 # Load InLegalBERT
 # --------------------------
 MODEL_NAME = "law-ai/InLegalBERT"
-API_KEY = os.getenv("HUGGINGFACE_API_KEY", "YOUR_HUGGINGFACE_API_KEY_HERE")
+API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 print("Loading InLegalBERT model...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -118,7 +118,7 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello, Backend is running 🚀"}
+    return {"message": "Hello, Microservice is running 🚀"}
 
 @app.post("/process-text")
 async def process_text(req: TextRequest):
@@ -253,6 +253,10 @@ Provide a clear, concise answer and summarize key clauses if relevant.
 # Run server
 # --------------------------
 if __name__ == "__main__":
-    import uvicorn
-    print("🚀 Starting InLegalBERT + FAISS Microservice on port 8000...")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    print("🚀 Starting microservice...")
+    print(f"✅ Service will bind to port {port}. Hit GET / to confirm deployment.")
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
+
+
